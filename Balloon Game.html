@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="Description" content="Enter your description here" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Ballon</title>
+    <style>
+        body {
+            overflow: hidden;
+            background-color: rgb(231, 227, 227);
+        }
+        
+        .container {
+            width: 800px;
+            height: 450px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 3px solid grey;
+            border-radius: 10px;
+            box-shadow: 20px 20px 20px darkslategray, 20px 20px 20px orange, 20px 20px 20px greenyellow, 20px 20px 20px red;
+            background-color: rgb(196, 193, 193);
+        }
+        
+        .arrow {
+            width: 90px;
+            position: relative;
+            border: 2px solid black;
+        }
+        
+        .active {
+            background-color: red;
+        }
+        
+        .ballon {
+            position: relative;
+            width: 50px;
+            height: 70px;
+            border: 2px solid blue;
+            border-radius: 50%;
+            left: 90%;
+        }
+        
+        #a {
+            top: 30px;
+        }
+        
+        #b {
+            top: 100px;
+        }
+        
+        #c {
+            top: 200px;
+        }
+        
+        .box {
+            width: 50px;
+            height: 50px;
+        }
+        
+        .score {
+            background: green;
+            position: fixed;
+            right: 0;
+            width: 150px;
+            height: 100px;
+            font-size: 35px;
+        }
+        
+        .miss {
+            background: red;
+            width: 150px;
+            height: 100px;
+            font-size: 35px;
+        }
+        
+        .jumbotron {
+            background-color: rgb(88, 103, 119);
+            padding: 30px;
+            margin: 0%;
+            font-size: 70px;
+            color: white;
+        }
+        
+        .miss>div {
+            display: flex;
+        }
+        
+        footer {
+            position: relative;
+            height: 120px;
+            margin-top: 570px;
+            padding: 10px;
+        }
+        
+        .cong-section {
+            margin: auto;
+            /* place center */
+            max-width: 750px;
+            height: 250px;
+            background-color: seagreen;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 35px;
+            border-radius: 5px;
+            display: none;
+            /* to hide this */
+        }
+        
+        .cong-section-div p {
+            margin: 0;
+            font-size: 50px;
+        }
+        
+        .cong-section-div {
+            margin: 0 auto;
+            /* place center */
+            max-width: 750px;
+        }
+        
+        button {
+            background-color: orangered;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border: none;
+            text-align: center;
+            font-size: 30px;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 0 15px black;
+            margin-top: 60px;
+        }
+        
+        button:hover {
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1 class="jumbotron text-center">Balloon Game</h1>
+    </header>
+
+    <section>
+        <div class="score box text-center text-white ">Hit<br>0</div>
+        <div class="miss box text-center text-white ">Miss<br>0</div>
+
+        <div class="container ">
+            <!-- <img src='./Media/arrow.png' width="50px" /> -->
+            <div class="arrow"></div>
+            <div class="ballon" id='a'></div>
+            <div class="ballon" id='b'></div>
+            <div class="ballon" id='c'></div>
+        </div>
+    </section>
+    <!-- Congratulations Section -->
+    <section class="cong-section">
+        <div class="cong-section-div">
+            <p id="congrats">Congratulations !! You Won..</p>
+            <p id="lost">OOOHOO !! Bechara..</p>
+            <button> Restart Again </button>
+        </div>
+    </section>
+
+
+    <footer class="bg-dark text-center text-white">
+        <h3>Copyright &copy; 2021 M Kumar</h3>
+        <p>All Rights Reserved</p>
+        <small>Developed & Maintained by Mukul Kumar</small>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+
+    <script>
+        // Taking the Refernces
+
+        let arrow = document.querySelector('.arrow');
+        let ballons = document.querySelectorAll('.ballon');
+        let board = document.querySelector('.container');
+        let arrow_top = 0;
+        let arrow_right = 0;
+        let ballon_top = 0;
+        let active_ballon;
+        let score = 0,
+            miss = 0;
+        let congo_ref = document.querySelector(".cong-section")
+        let congrats_ref = document.querySelector('#congrats')
+        let lost_ref = document.querySelector('#lost')
+        let reset_ref = document.querySelector("button")
+            // Moving the arrow
+        window.addEventListener('keydown', (e) => {
+                console.log(e.keyCode)
+                if (e.keyCode === 40 && arrow_top < 440) {
+                    arrow_top += 10;
+                    arrow.style.top = `${arrow_top}px`;
+                }
+
+                if (e.keyCode === 38 && arrow_top > 0) {
+                    arrow_top -= 10;
+                    arrow.style.top = `${arrow_top}px`;
+                }
+
+                if (e.keyCode === 13) {
+                    let arrow_interval = setInterval(() => {
+                        if (arrow_right === 680) {
+
+                            if (arrow_top >= ballon_top && arrow_top <= ballon_top + 70) {
+                                active_ballon.style.display = 'none';
+                                score += 1;
+                                document.querySelector('.score').innerText = score;
+                                if (score == 3) {
+                                    board.style.display = 'none';
+                                    congo_ref.style.display = "block";
+                                    lost_ref.style.display = "none";
+
+                                }
+                            } else {
+                                miss += 1;
+                                document.querySelector('.miss').innerText = miss;
+                                if (miss == 3) {
+                                    board.style.display = 'none';
+                                    congo_ref.style.display = "block";
+                                    congrats_ref.style.display = "none";
+
+                                }
+                            }
+                            clearInterval(arrow_interval);
+                            setTimeout(() => {
+                                arrow_top = 0;
+                                arrow_right = 0;
+                                arrow.style.top = `${arrow_top}px`;
+                                arrow.style.left = `${arrow_right}px`;
+                            }, 300)
+                        }
+                        arrow_right += 5;
+                        arrow.style.left = `${arrow_right}px`;
+
+
+                    }, 30)
+                }
+            })
+            //restart 
+        reset_ref.addEventListener('click', (e) => {
+            location.reload();
+        })
+
+        // Selecting the ballon
+        ballons.forEach(ballon => {
+            ballon.addEventListener('click', (e) => {
+
+                active_ballon = e.target;
+                ballon_top = active_ballon.offsetTop;
+                let previous_active_ballon = document.querySelector('.active');
+                if (previous_active_ballon) {
+                    previous_active_ballon.classList.remove('active');
+                }
+                e.target.classList.add('active');
+
+
+            })
+        })
+    </script>
+</body>
+
+</html>
